@@ -265,6 +265,14 @@ Install directly in Claude Code with two commands:
 
 Agent-agnostic clients can use the same repo via `.agents/plugins/marketplace.json` (same `ui-ux-pro-max` plugin and source as the Claude marketplace).
 
+### Using GitHub CLI
+
+Install the skill with the [GitHub CLI](https://cli.github.com/):
+
+```bash
+gh skill install nextlevelbuilder/ui-ux-pro-max-skill .claude/skills/ui-ux-pro-max
+```
+
 ### Using CLI (Recommended)
 
 ```bash
@@ -310,6 +318,8 @@ The npm package is `ui-ux-pro-max-cli`; it still installs the `uipro` command. O
 ```bash
 uipro init --ai claude --global   # Install to ~/.claude/skills/
 uipro init --ai cursor --global   # Install to ~/.cursor/skills/
+uipro init --ai copilot --global  # Install to ~/.copilot/skills/
+uipro init --ai antigravity --global # Install to ~/.agents/skills/
 uipro init --ai zcode --global    # Install to ~/.zcode/skills/
 uipro init --ai kimi --global     # Install to ~/.kimi-code/skills/
 uipro init --ai universal --global # Install to ~/.agents/skills/
@@ -353,6 +363,8 @@ Build a landing page for my SaaS product
 ```
 
 > **Trae**: Switch to **SOLO** mode first. The skill will activate for UI/UX requests.
+> **GitHub Copilot**: Discovers Agent Skills from `.github/skills/*/SKILL.md` (or `~/.copilot/skills/` globally). Workspace-level guidance is provided via `.github/copilot-instructions.md`.
+> **Antigravity**: Discovers Agent Skills from `.agents/skills/*/SKILL.md` (or `~/.agents/skills/` globally). Workspace-level guidance is provided via `AGENTS.md`.
 
 ### Workflow Mode (Slash Command)
 
@@ -530,6 +542,18 @@ python3 .claude/skills/ui-ux-pro-max/scripts/search.py "SaaS dashboard" --design
 ```
 
 `--preview` requires `--design-system`. With `--persist` it writes `preview.html` next to `MASTER.md`. Without `--persist`, pass `--output-dir` to write `preview.html` there, or omit it to get a temp file whose path is printed. Existing files are skipped unless you also pass `--force`.
+
+The preview uses RTL layout when it finds an RTL letter in the query or, if
+the query has none, in the project name. A leading Latin brand or acronym does
+not prevent RTL inference, and digits alone do not trigger it. Use `--lang` to
+set the HTML language tag and `--direction rtl` or `--direction ltr` to set
+the layout direction explicitly. Arabic-script text defaults to `ar`. For
+Persian or Urdu previews, pass `--lang fa` or `--lang ur` to set the language
+while keeping the RTL layout.
+
+```bash
+python3 .claude/skills/ui-ux-pro-max/scripts/search.py "clinic" --design-system --preview -p "Clinic" --lang ar --direction rtl
+```
 
 `--tokens dtcg` prints W3C Design Tokens JSON; `--tokens css` prints `:root` CSS variables named the same way as `cli/assets/skills/design-system/scripts/generate-tokens.cjs`. Both require `--design-system`. With `--persist`, `tokens.json` is written beside `MASTER.md` (and `tokens.css` when `--tokens css`). `--page` overrides do not emit token files.
 
@@ -745,6 +769,8 @@ rm -rf .claude/skills/ui-ux-pro-max   # Claude Code
 rm -rf .cursor/skills/ui-ux-pro-max   # Cursor
 rm -rf .windsurf/skills/ui-ux-pro-max # Windsurf
 rm -rf .agents/skills/ui-ux-pro-max   # Antigravity / Codex
+rm -rf .github/skills/ui-ux-pro-max   # GitHub Copilot (project)
+rm -rf ~/.copilot/skills/ui-ux-pro-max # GitHub Copilot (global)
 ```
 
 ### Claude.ai's "Upload a skill" dialog says "Zip contains too many files (maximum 200)"
